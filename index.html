@@ -4865,7 +4865,12 @@ async function syncFirstLoginAndGlobalReminders(participantId) {
     const ud = state.data[participantId];
     if (!ud) return;
     
-    ud.firstLoginAt = data.first_login_at || null;
+    // v5 — ancre hybride :
+    //   priorité à data.anchor_at (MIN(responses.created_at) si existe, sinon first_login_at)
+    //   repli pour compat ascendante v4 : data.first_login_at
+    ud.firstLoginAt      = data.anchor_at || data.first_login_at || null;  // CHANGED — utilisé par getGlobalReminders
+    ud.firstLoginRaw     = data.first_login_at  || null;                   // NEW — 1re connexion stricte (lecture admin / debug)
+    ud.firstResponseAt   = data.first_response_at || null;                  // NEW — 1re activité module (lecture admin / debug)
     
     // global_reminders attendu : { "1": { completed_at: "..." }, "3": { ... }, ... }
     const done = {};
