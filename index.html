@@ -46,7 +46,309 @@
    --module-light : pale tinted background (cards, descriptions)
    --module-soft  : ultra-pale wash (subtle backgrounds, hero overlays)
 */
+/* === RAPPELS GLOBAUX (parcours d'ancrage 1re connexion) === */
+.reminder-section.global-section {
+  background: linear-gradient(135deg, var(--pastel-blue) 0%, var(--paper) 100%);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px 18px;
+  margin-bottom: 28px;
+}
 
+.reminder-section.global-section .reminder-section-title {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 20px;
+  color: var(--navy);
+  margin-bottom: 14px;
+  letter-spacing: -0.3px;
+}
+
+.global-reminder-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.global-reminder-card {
+  display: flex;
+  gap: 14px;
+  background: var(--paper);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 14px;
+  transition: all var(--transition);
+}
+
+.global-reminder-card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.global-reminder-card.today {
+  border-color: var(--gold);
+  background: var(--gold-pale);
+}
+
+.global-reminder-card.overdue {
+  border-color: #C73D3D;
+  background: #FDF1F1;
+}
+
+.global-reminder-card.done {
+  opacity: 0.65;
+  background: var(--teal-pale);
+  border-color: var(--teal);
+}
+
+.global-reminder-card.upcoming {
+  /* default */
+}
+
+.global-reminder-day {
+  flex: 0 0 auto;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: var(--navy);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.3px;
+}
+
+.global-reminder-card.today    .global-reminder-day { background: var(--gold); }
+.global-reminder-card.overdue  .global-reminder-day { background: #C73D3D; }
+.global-reminder-card.done     .global-reminder-day { background: var(--teal); }
+
+.global-reminder-body { flex: 1; min-width: 0; }
+
+.global-reminder-title {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--navy);
+  margin-bottom: 3px;
+}
+
+.global-reminder-hint {
+  font-size: 12px;
+  color: var(--text-soft);
+  line-height: 1.45;
+  margin-bottom: 6px;
+}
+
+.global-reminder-due {
+  font-size: 12px;
+  color: var(--text-mute);
+  font-weight: 500;
+}
+
+.global-reminder-card.today   .global-reminder-due { color: var(--gold);  font-weight: 600; }
+.global-reminder-card.overdue .global-reminder-due { color: #C73D3D;      font-weight: 600; }
+/* === MODALE D'ALERTE AUTO AU LOGIN (rappels globaux dus) === */
+.global-reminder-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(13, 26, 46, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 20px;
+  animation: modalFadeIn 240ms ease-out;
+  backdrop-filter: blur(2px);
+}
+
+@keyframes modalFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.global-reminder-modal {
+  background: var(--paper);
+  border-radius: var(--radius-lg);
+  max-width: 560px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-lg);
+  animation: modalSlideUp 280ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes modalSlideUp {
+  from { transform: translateY(20px) scale(0.95); opacity: 0; }
+  to   { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+.global-reminder-modal-header {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-deep) 100%);
+  color: white;
+  padding: 24px 28px 18px;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+.global-reminder-modal-header h2 {
+  color: white;
+  font-size: 24px;
+  margin-bottom: 4px;
+  letter-spacing: -0.3px;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+}
+
+.global-reminder-modal-header .modal-sub {
+  font-size: 13px;
+  opacity: 0.85;
+  font-style: italic;
+}
+
+.global-reminder-modal-body {
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.modal-alert-card {
+  display: flex;
+  gap: 16px;
+  padding: 16px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--paper);
+  transition: all var(--transition);
+}
+
+.modal-alert-card.today {
+  border-color: var(--gold);
+  background: var(--gold-pale);
+}
+
+.modal-alert-card.overdue {
+  border-color: #C73D3D;
+  background: #FDF1F1;
+}
+
+.modal-alert-card.just-done {
+  opacity: 0.55;
+  border-color: var(--teal);
+  background: var(--teal-pale);
+}
+
+.modal-alert-day {
+  flex: 0 0 auto;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 14px;
+  color: white;
+  background: var(--gold);
+  letter-spacing: 0.3px;
+}
+
+.modal-alert-card.overdue   .modal-alert-day { background: #C73D3D; }
+.modal-alert-card.just-done .modal-alert-day { background: var(--teal); }
+
+.modal-alert-content { flex: 1; min-width: 0; }
+
+.modal-alert-title {
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--navy);
+  margin-bottom: 4px;
+}
+
+.modal-alert-hint {
+  font-size: 13px;
+  color: var(--text-soft);
+  line-height: 1.5;
+  margin-bottom: 10px;
+}
+
+.modal-alert-status {
+  font-size: 12px;
+  color: var(--text-mute);
+  margin-bottom: 10px;
+  font-weight: 500;
+}
+
+.modal-alert-card.today   .modal-alert-status { color: var(--gold);  font-weight: 600; }
+.modal-alert-card.overdue .modal-alert-status { color: #C73D3D;      font-weight: 600; }
+
+.modal-alert-btn {
+  display: inline-block;
+  padding: 8px 14px;
+  background: var(--navy);
+  color: white;
+  border-radius: var(--radius);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background var(--transition);
+  user-select: none;
+}
+
+.modal-alert-btn:hover { background: var(--navy-deep); }
+
+.modal-alert-card.just-done .modal-alert-btn {
+  background: var(--teal);
+  pointer-events: none;
+}
+
+.global-reminder-modal-footer {
+  padding: 16px 24px 22px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid var(--border-soft);
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.modal-footer-link {
+  color: var(--text-soft);
+  font-size: 13px;
+  cursor: pointer;
+  font-weight: 500;
+  user-select: none;
+}
+
+.modal-footer-link:hover { color: var(--navy); }
+
+.modal-close-btn {
+  padding: 10px 20px;
+  background: var(--gold);
+  color: var(--navy-deep);
+  border-radius: var(--radius);
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background var(--transition);
+  border: none;
+}
+
+.modal-close-btn:hover { background: var(--gold-light); }
+
+@media (max-width: 480px) {
+  .global-reminder-modal-overlay { padding: 0; }
+  .global-reminder-modal {
+    max-height: 100vh;
+    height: 100vh;
+    border-radius: 0;
+  }
+  .global-reminder-modal-header { border-radius: 0; }
+}
+.global-reminder-cta {
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--gold);
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
 /* M1 — LE CERVEAU : Bleu nuit profond (cognition, profondeur) */
 .module-navy { 
   --module-color: #1F3A6E; 
@@ -4147,7 +4449,7 @@ async function supabaseLoadParticipantData(participantId) {
     .eq('participant_id', participantId)
     .maybeSingle();
   
-  if (!state.data[participantId]) {
+   if (!state.data[participantId]) {
     state.data[participantId] = {
       code: participantId,
       name: pRow?.full_name || participantId,
@@ -4156,8 +4458,18 @@ async function supabaseLoadParticipantData(participantId) {
       sessions: {},
       totalStars: 0,
       leaderboardOptIn: null,
-      pseudoOptional: ''
+      pseudoOptional: '',
+      firstLoginAt: null,          // NEW — date 1re connexion (ISO, source : Supabase)
+      globalRemindersDone: {}      // NEW — { "1": "2026-05-15T...", "3": "...", ... }
     };
+  } else {
+    // Migration douce : si l'utilisateur existait déjà sans ces champs
+    if (state.data[participantId].firstLoginAt === undefined) {
+      state.data[participantId].firstLoginAt = null;
+    }
+    if (state.data[participantId].globalRemindersDone === undefined) {
+      state.data[participantId].globalRemindersDone = {};
+    }
   }
   
   // Init empty sessions for all modules
@@ -4524,6 +4836,259 @@ function getStepShortLabel(module, step) {
   return 'Bilan';
 }
 
+// =============================================================
+// GLOBAL REMINDERS — rappels d'ancrage planifiés depuis la 1re connexion
+// =============================================================
+// 5 paliers J+1 / J+3 / J+7 / J+15 / J+30 calculés depuis firstLoginAt.
+// Source de vérité : table public.participants (Supabase) — colonnes
+// first_login_at + global_reminders. Lecture / écriture via RPC.
+// =============================================================
+
+// Configuration des contenus de chaque palier (ancres neuroscientifiques)
+const GLOBAL_REMINDER_CONFIG = {
+  1:  { title: 'Premier engagement',           hint: 'Jour 1 du parcours — pose ton intention et démarre le premier module.' },
+  3:  { title: 'Effet d\'espacement initial',   hint: 'Jour 3 — re-traversée des premiers contenus avant la phase d\'oubli.' },
+  7:  { title: 'Reprise spaced retrieval',     hint: 'Jour 7 — réactivation à la fin de la première semaine.' },
+  15: { title: 'Consolidation mi-parcours',    hint: 'Jour 15 — bilan d\'étape : ce qui s\'est ancré, ce qui s\'efface.' },
+  30: { title: 'Ancrage de transfert',         hint: 'Jour 30 — fin du protocole d\'ancrage standard, transfert en pratique réelle.' }
+};
+
+// Appel post-login : capte la 1re connexion + récupère le statut des rappels globaux
+async function syncFirstLoginAndGlobalReminders(participantId) {
+  try {
+    const sb = initSupabase();
+    if (!sb) return;
+    const { data, error } = await sb.rpc('touch_session_and_get_profile');
+    if (error) { console.warn('touch_session_and_get_profile failed:', error); return; }
+    if (!data) return;
+    
+    const ud = state.data[participantId];
+    if (!ud) return;
+    
+    ud.firstLoginAt = data.first_login_at || null;
+    
+    // global_reminders attendu : { "1": { completed_at: "..." }, "3": { ... }, ... }
+    const done = {};
+    if (data.global_reminders && typeof data.global_reminders === 'object') {
+      Object.keys(data.global_reminders).forEach(k => {
+        const entry = data.global_reminders[k];
+        if (entry && entry.completed_at) {
+          done[k] = entry.completed_at;
+        }
+      });
+    }
+    ud.globalRemindersDone = done;
+    saveAllData();
+  } catch (e) {
+    console.warn('syncFirstLoginAndGlobalReminders error:', e);
+  }
+}
+
+// Construit la liste des 5 rappels globaux avec leur statut courant
+function getGlobalReminders(userCode) {
+  const ud = state.data[userCode];
+  if (!ud || !ud.firstLoginAt) return [];
+  
+  const firstLogin = new Date(ud.firstLoginAt);
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  const done = ud.globalRemindersDone || {};
+  
+  return REMINDER_INTERVALS.map(d => {
+    const due = new Date(firstLogin);
+    due.setDate(due.getDate() + (d - 1));   // CHANGE — J+1 = jour de 1re connexion (jour 1 du parcours)
+    due.setHours(0, 0, 0, 0);
+    
+    const completedAt = done[String(d)] || null;
+    let status;
+    if (completedAt)               status = 'done';
+    else if (due.getTime() < today.getTime())  status = 'overdue';
+    else if (due.getTime() === today.getTime()) status = 'today';
+    else                            status = 'upcoming';
+    
+    const diffDays = Math.round((due.getTime() - today.getTime()) / 86400000);
+    
+    return {
+      day: d,
+      dueDate: due.toISOString(),
+      status,
+      completedAt,
+      diffDays,
+      title: GLOBAL_REMINDER_CONFIG[d]?.title || `J+${d}`,
+      hint:  GLOBAL_REMINDER_CONFIG[d]?.hint  || ''
+    };
+  });
+}
+
+// Marque un palier comme fait (RPC + état local + re-render)
+async function markGlobalReminderDone(day) {
+  try {
+    const sb = initSupabase();
+    if (!sb) return;
+    const code = getActiveUserCode();
+    if (!code) return;
+    
+    const { data, error } = await sb.rpc('mark_global_reminder_done', { p_day: day });
+    if (error) { console.warn('mark_global_reminder_done failed:', error); return; }
+    
+    const ud = state.data[code];
+    if (!ud) return;
+    ud.globalRemindersDone = ud.globalRemindersDone || {};
+    
+    // Met à jour localement à partir du retour RPC
+    if (data && typeof data === 'object') {
+      Object.keys(data).forEach(k => {
+        if (data[k] && data[k].completed_at) {
+          ud.globalRemindersDone[k] = data[k].completed_at;
+        }
+      });
+    } else {
+      ud.globalRemindersDone[String(day)] = new Date().toISOString();
+    }
+    saveAllData();
+    renderApp();
+  } catch (e) {
+    console.warn('markGlobalReminderDone error:', e);
+  }
+}
+// =============================================================
+// GLOBAL REMINDER ALERT — modale automatique au login
+// =============================================================
+// Affiche immédiatement après login une modale qui liste les rappels
+// globaux dus aujourd'hui ou en retard. Une seule apparition par session.
+// =============================================================
+
+function showGlobalReminderAlert() {
+  // Sécurité : uniquement pour les participants connectés
+  if (!state.currentUser || state.currentUser.type !== 'participant') return;
+  
+  // Éviter une 2e apparition pendant la même session de login
+  if (state.currentUser._globalAlertShown) return;
+  
+  const code = getActiveUserCode();
+  const dueRems = (getGlobalReminders(code) || [])
+    .filter(r => r.status === 'today' || r.status === 'overdue');
+  
+  if (dueRems.length === 0) return;
+  
+  state.currentUser._globalAlertShown = true;
+  
+  // Si la modale existe déjà (cas tordu), on la retire d'abord
+  const existing = document.getElementById('global-reminder-modal-overlay');
+  if (existing) existing.remove();
+  
+  const overlay = document.createElement('div');
+  overlay.className = 'global-reminder-modal-overlay';
+  overlay.id = 'global-reminder-modal-overlay';
+  overlay.onclick = (ev) => {
+    if (ev.target === overlay) closeGlobalReminderAlert();
+  };
+  
+  const titleCount = dueRems.length;
+  const titleText  = titleCount === 1
+    ? "Tu as 1 rappel d'ancrage à faire"
+    : `Tu as ${titleCount} rappels d'ancrage à faire`;
+  
+  overlay.innerHTML = `
+    <div class="global-reminder-modal" role="dialog" aria-label="Rappels d'ancrage" onclick="event.stopPropagation()">
+      <div class="global-reminder-modal-header">
+        <h2>${titleText}</h2>
+        <div class="modal-sub">Parcours depuis ta 1re connexion — moment de réactiver ce qui a été activé.</div>
+      </div>
+      <div class="global-reminder-modal-body" id="global-alert-body">
+        ${dueRems.map(r => renderModalAlertCard(r)).join('')}
+      </div>
+      <div class="global-reminder-modal-footer">
+        <span class="modal-footer-link" onclick="closeGlobalReminderAlertAndOpenReminders()">Voir tous mes rappels →</span>
+        <button class="modal-close-btn" onclick="closeGlobalReminderAlert()">Plus tard</button>
+      </div>
+    </div>
+  `;
+  
+  document.body.appendChild(overlay);
+}
+
+function renderModalAlertCard(r) {
+  let dueLabel = '';
+  if (r.status === 'today') {
+    dueLabel = 'À faire aujourd\'hui';
+  } else if (r.status === 'overdue') {
+    const n = Math.abs(r.diffDays);
+    dueLabel = `En retard de ${n} jour${n > 1 ? 's' : ''}`;
+  }
+  
+  return `
+    <div class="modal-alert-card ${r.status}" data-day="${r.day}">
+      <div class="modal-alert-day">J+${r.day}</div>
+      <div class="modal-alert-content">
+        <div class="modal-alert-title">${r.title}</div>
+        <div class="modal-alert-hint">${r.hint}</div>
+        <div class="modal-alert-status">${dueLabel}</div>
+        <span class="modal-alert-btn" onclick="markGlobalReminderDoneInModal(${r.day})">✓ Marquer comme fait</span>
+      </div>
+    </div>
+  `;
+}
+
+async function markGlobalReminderDoneInModal(day) {
+  // Appelle la RPC sans relancer renderApp() (qui détruirait la modale en cours)
+  try {
+    const sb = initSupabase();
+    if (!sb) return;
+    const code = getActiveUserCode();
+    if (!code) return;
+    
+    const { data, error } = await sb.rpc('mark_global_reminder_done', { p_day: day });
+    if (error) { console.warn('mark_global_reminder_done (modal) failed:', error); return; }
+    
+    const ud = state.data[code];
+    if (ud) {
+      ud.globalRemindersDone = ud.globalRemindersDone || {};
+      const k = String(day);
+      if (data && typeof data === 'object' && data[k] && data[k].completed_at) {
+        ud.globalRemindersDone[k] = data[k].completed_at;
+      } else {
+        ud.globalRemindersDone[k] = new Date().toISOString();
+      }
+      saveAllData();
+    }
+    
+    // Met à jour visuellement la carte dans la modale (sans la détruire)
+    const card = document.querySelector(`.modal-alert-card[data-day="${day}"]`);
+    if (card) {
+      card.classList.remove('today', 'overdue');
+      card.classList.add('just-done');
+      const btn = card.querySelector('.modal-alert-btn');
+      if (btn) btn.textContent = '✓ Fait';
+      const status = card.querySelector('.modal-alert-status');
+      if (status) status.textContent = 'Marqué comme fait';
+    }
+    
+    // S'il ne reste plus de cartes "today" ou "overdue" → auto-fermeture après 800ms
+    const remaining = document.querySelectorAll(
+      '.modal-alert-card.today, .modal-alert-card.overdue'
+    ).length;
+    if (remaining === 0) {
+      setTimeout(() => closeGlobalReminderAlert(), 800);
+    }
+  } catch (e) {
+    console.warn('markGlobalReminderDoneInModal error:', e);
+  }
+}
+
+function closeGlobalReminderAlert() {
+  const overlay = document.getElementById('global-reminder-modal-overlay');
+  if (overlay) overlay.remove();
+  // Rafraîchit la vue principale si elle peut être affectée par les nouveaux statuts
+  if (state.currentView === 'reminders' || state.currentView === 'dashboard') {
+    renderApp();
+  }
+}
+
+function closeGlobalReminderAlertAndOpenReminders() {
+  const overlay = document.getElementById('global-reminder-modal-overlay');
+  if (overlay) overlay.remove();
+  navigateTo('reminders');
+}
 // --- Reminder scheduling ---
 function scheduleReminders(session) {
   if (!session.completedAt) return;
@@ -4774,10 +5339,14 @@ async function handleParticipantLogin(ev) {
     // Step 4 : load this participant's data from cloud
     await supabaseLoadParticipantData(pRow.participant_id);
     
+    // Step 4b : NEW — capter la 1re connexion (RPC idempotente : COALESCE côté SQL)
+    await syncFirstLoginAndGlobalReminders(pRow.participant_id);
+    
     state.currentUser = { type: 'participant', code: pRow.participant_id, name: pRow.full_name };
     state.currentView = 'dashboard';
     saveAllData();
     renderApp();
+    setTimeout(showGlobalReminderAlert, 350); // NEW — modale auto si rappels dus
   } catch (e) {
     errEl.textContent = e.message || 'Connexion impossible.';
     btn.disabled = false;
@@ -5810,12 +6379,23 @@ function completeModule() {
 // =============================================================
 
 function renderReminders() {
-  const status = getRemindersStatus(getActiveUserCode());
+  const code = getActiveUserCode();
+  const status = getRemindersStatus(code);
+  const globalRems = getGlobalReminders(code);
   
   return `
     <div class="reminders-screen fade-in">
       <h2>Mes rappels</h2>
       <p>3 questions par rappel — courbe d'oubli d'Ebbinghaus aux intervalles J+1, J+3, J+7, J+15, J+30.</p>
+      
+      ${globalRems.length > 0 ? `
+        <div class="reminder-section global-section">
+          <div class="reminder-section-title">Parcours d'ancrage (depuis ma 1re connexion)</div>
+          <div class="global-reminder-grid">
+            ${globalRems.map(g => renderGlobalReminderCard(g)).join('')}
+          </div>
+        </div>
+      ` : ''}
       
       ${status.overdue.length > 0 ? `
         <div class="reminder-section">
@@ -5901,7 +6481,34 @@ function renderReminderCard(r, cls) {
     </div>
   `;
 }
-
+function renderGlobalReminderCard(g) {
+  const dueLabel = (() => {
+    if (g.status === 'done') {
+      const d = new Date(g.completedAt);
+      return `✓ fait le ${formatDate(d.toISOString())}`;
+    }
+    if (g.status === 'today')   return 'aujourd\'hui';
+    if (g.status === 'overdue') return `en retard de ${Math.abs(g.diffDays)} j`;
+    if (g.diffDays === 1)        return 'demain';
+    return `dans ${g.diffDays} jours · ${formatDate(g.dueDate)}`;
+  })();
+  
+  const clickable = (g.status === 'overdue' || g.status === 'today');
+  const onclick   = clickable ? `onclick="markGlobalReminderDone(${g.day})"` : '';
+  const cursor    = clickable ? 'pointer' : 'default';
+  
+  return `
+    <div class="global-reminder-card ${g.status}" ${onclick} style="cursor:${cursor};">
+      <div class="global-reminder-day">J+${g.day}</div>
+      <div class="global-reminder-body">
+        <div class="global-reminder-title">${g.title}</div>
+        <div class="global-reminder-hint">${g.hint}</div>
+        <div class="global-reminder-due">${dueLabel}</div>
+        ${clickable ? '<div class="global-reminder-cta">→ Marquer comme fait</div>' : ''}
+      </div>
+    </div>
+  `;
+}
 function startReminderQuiz(moduleCode, day) {
   const module = MODULES[moduleCode];
   if (!module) return;
@@ -7399,12 +8006,14 @@ async function init() {
         saveAllData();
         renderApp();
         return;
-      } else if (sess.participant) {
+       } else if (sess.participant) {
         await supabaseLoadParticipantData(sess.participant.participant_id);
+        await syncFirstLoginAndGlobalReminders(sess.participant.participant_id); // NEW
         state.currentUser = { type: 'participant', code: sess.participant.participant_id, name: sess.participant.full_name };
         state.currentView = 'dashboard';
         saveAllData();
         renderApp();
+        setTimeout(showGlobalReminderAlert, 350); // NEW — modale auto si rappels dus
         return;
       }
     }
