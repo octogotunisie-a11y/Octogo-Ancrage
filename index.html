@@ -4302,7 +4302,7 @@ const COLOR_MAP = {
   "gold": "module-gold"
 };
 
-const REMINDER_INTERVALS = [1, 3, 7, 15, 30];
+const REMINDER_INTERVALS = [1, 3, 5, 7];
 
 // --- App state ---
 let state = {
@@ -4839,18 +4839,18 @@ function getStepShortLabel(module, step) {
 // =============================================================
 // GLOBAL REMINDERS — rappels d'ancrage planifiés depuis la 1re connexion
 // =============================================================
-// 5 paliers J+1 / J+3 / J+7 / J+15 / J+30 calculés depuis firstLoginAt.
+// 4 paliers J+1 / J+3 / J+5 / J+7 calculés depuis firstLoginAt.
+// Logique progressive « à partir de demain » : J+1 = lendemain de l'ancre.
 // Source de vérité : table public.participants (Supabase) — colonnes
 // first_login_at + global_reminders. Lecture / écriture via RPC.
 // =============================================================
 
 // Configuration des contenus de chaque palier (ancres neuroscientifiques)
 const GLOBAL_REMINDER_CONFIG = {
-  1:  { title: 'Premier engagement',           hint: 'Jour 1 du parcours — pose ton intention et démarre le premier module.' },
-  3:  { title: 'Effet d\'espacement initial',   hint: 'Jour 3 — re-traversée des premiers contenus avant la phase d\'oubli.' },
-  7:  { title: 'Reprise spaced retrieval',     hint: 'Jour 7 — réactivation à la fin de la première semaine.' },
-  15: { title: 'Consolidation mi-parcours',    hint: 'Jour 15 — bilan d\'étape : ce qui s\'est ancré, ce qui s\'efface.' },
-  30: { title: 'Ancrage de transfert',         hint: 'Jour 30 — fin du protocole d\'ancrage standard, transfert en pratique réelle.' }
+  1: { title: 'Premier engagement',          hint: 'Lendemain de la 1re connexion — pose ton intention et démarre le premier module.' },
+  3: { title: 'Effet d\'espacement initial',  hint: 'J+3 — re-traversée des premiers contenus avant la phase d\'oubli.' },
+  5: { title: 'Consolidation rapprochée',     hint: 'J+5 — réactivation intermédiaire pour stabiliser l\'ancrage en mémoire.' },
+  7: { title: 'Reprise spaced retrieval',    hint: 'J+7 — réactivation à la fin de la première semaine, fin du protocole d\'ancrage.' }
 };
 
 // Appel post-login : capte la 1re connexion + récupère le statut des rappels globaux
@@ -4900,7 +4900,7 @@ function getGlobalReminders(userCode) {
   
   return REMINDER_INTERVALS.map(d => {
     const due = new Date(firstLogin);
-    due.setDate(due.getDate() + (d - 1));   // CHANGE — J+1 = jour de 1re connexion (jour 1 du parcours)
+    due.setDate(due.getDate() + d);   // CHANGE — logique progressive « à partir de demain » : J+1 = lendemain de l'ancre.
     due.setHours(0, 0, 0, 0);
     
     const completedAt = done[String(d)] || null;
@@ -6391,7 +6391,7 @@ function renderReminders() {
   return `
     <div class="reminders-screen fade-in">
       <h2>Mes rappels</h2>
-      <p>3 questions par rappel — courbe d'oubli d'Ebbinghaus aux intervalles J+1, J+3, J+7, J+15, J+30.</p>
+      <p>3 questions par rappel — courbe d'oubli d'Ebbinghaus aux intervalles J+1, J+3, J+5, J+7.</p>
       
       ${globalRems.length > 0 ? `
         <div class="reminder-section global-section">
