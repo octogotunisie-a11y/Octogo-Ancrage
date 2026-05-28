@@ -5117,7 +5117,7 @@ function scheduleReminders(session) {
   if (!session.completedAt) return;
   const completedDate = new Date(session.completedAt);
   REMINDER_INTERVALS.forEach(d => {
-    if (!session.reminders?.[d]?.dueDate) {
+    if (!session.reminders[d].dueDate) {
       const due = new Date(completedDate);
       due.setDate(due.getDate() + d);
       session.reminders[d].dueDate = due.toISOString();
@@ -5134,31 +5134,8 @@ function getRemindersStatus(userCode) {
   
   Object.entries(ud.sessions).forEach(([moduleCode, session]) => {
     REMINDER_INTERVALS.forEach(d => {
-  const r = session.reminders?.[d];
-
-  if (!r || !r.dueDate) return;
-
-  const dueTs = new Date(r.dueDate).getTime();
-
-  const item = {
-    moduleCode,
-    day: d,
-    dueDate: r.dueDate,
-    completed: r.completed,
-    completedAt: r.completedAt,
-    score: r.score
-  };
-
-  if (r.completed) {
-    done.push(item);
-  } else if (dueTs < now - dayMs) {
-    overdue.push(item);
-  } else if (dueTs >= now - dayMs && dueTs <= now + dayMs) {
-    today.push(item);
-  } else if (dueTs > now + dayMs) {
-    upcoming.push(item);
-  }
-});
+      const r = session.reminders[d];
+      if (!r.dueDate) return;
       const dueTs = new Date(r.dueDate).getTime();
       const item = { moduleCode, day: d, dueDate: r.dueDate, completed: r.completed, completedAt: r.completedAt, score: r.score };
       if (r.completed) {
