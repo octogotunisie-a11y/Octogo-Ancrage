@@ -4809,7 +4809,7 @@ function calculateStars(session) {
   }
   
   // Star 5: 100% first try + all reminders done in time
-  const allRemindersDone = REMINDER_INTERVALS.every(d => session.reminders[d].completed);
+  const allRemindersDone = REMINDER_INTERVALS.every(d => session.reminders?.[d]?.completed === true);
   if (stars >= 4 && session.quizFirstTry && session.quizScore === 1 && allRemindersDone) {
     stars = 5;
   }
@@ -5117,6 +5117,9 @@ function scheduleReminders(session) {
   if (!session.completedAt) return;
   const completedDate = new Date(session.completedAt);
   REMINDER_INTERVALS.forEach(d => {
+    if (!session.reminders[d]) {
+      session.reminders[d] = { dueDate: null, completed: false, completedAt: null, score: null };
+    }
     if (!session.reminders[d].dueDate) {
       const due = new Date(completedDate);
       due.setDate(due.getDate() + d);
@@ -5134,8 +5137,8 @@ function getRemindersStatus(userCode) {
   
   Object.entries(ud.sessions).forEach(([moduleCode, session]) => {
     REMINDER_INTERVALS.forEach(d => {
-      const r = session.reminders[d];
-      if (!r.dueDate) return;
+      const r = session.reminders?.[d];
+      if (!r || !r.dueDate) return;
       const dueTs = new Date(r.dueDate).getTime();
       const item = { moduleCode, day: d, dueDate: r.dueDate, completed: r.completed, completedAt: r.completedAt, score: r.score };
       if (r.completed) {
@@ -8013,6 +8016,21 @@ async function init() {
       if (!state.data[code].sessions[mc]) {
         state.data[code].sessions[mc] = createEmptySession();
       }
+    });
+  });
+
+  // Migration v7 — normaliser la FORME des reminders de TOUTES les sessions
+  // restaurées depuis localStorage. Les données écrites par d'anciennes versions
+  // utilisaient les paliers {1,3,7,15,30} : il leur manque la clé 5 (nouveau
+  // palier v7) et elles conservent des clés 15/30 désormais inutilisées.
+  // normalizeReminders() ré-établit l'invariant « exactement une entrée par
+  // palier actif {1,3,5,7} », ce qui élimine durablement le crash
+  // "Cannot read properties of undefined (reading 'dueDate')".
+  Object.keys(state.data).forEach(code => {
+    const ud = state.data[code];
+    if (!ud || !ud.sessions) return;
+    Object.keys(ud.sessions).forEach(mc => {
+      ud.sessions[mc].reminders = normalizeReminders(ud.sessions[mc].reminders);
     });
   });
   
